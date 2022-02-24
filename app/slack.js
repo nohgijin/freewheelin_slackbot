@@ -21,7 +21,6 @@ async function postMessageChannel(text, channelId) {
 }
 
 function getLinkText(text, url) {
-  console.log(text, url);
   return `<${url}|${text}>`;
 }
 
@@ -39,26 +38,41 @@ async function sendPullRequestNotification({
     )}] 새로운 PR이 도착했습니다🥳 소중한 코드리뷰 부탁드려요~ 🙏 \n<${url}|${title}> by ${getFEMember(
       loginId
     )}`,
-    channelId
+    "C02R2GVEYS2"
   );
 }
 
-async function sendForgotPullRequestNotification(pr) {
-  const { loginId, full_name, html_url, url, title, diffDate } = pr;
-  parsingTitle = title.replace(/\>/g, "");
-  postMessageChannel(
-    `[${getLinkText(
-      full_name,
-      html_url
-    )}] ${diffDate}일이 지난 PR이 있습니다🤕 소중한 코드리뷰 부탁드려요~ 🙏 \n<${url}|${parsingTitle}> by ${getFEMember(
+async function sendForgetPullRequestNotification(notiPrList) {
+  let text = "";
+  const dateFormat = [
+    "하루",
+    "이틀",
+    "삼일",
+    "사일",
+    "오일",
+    "육일",
+    "칠일",
+    "팔일",
+    "구일",
+    "십일",
+  ];
+  notiPrList.forEach((pr, index) => {
+    const { loginId, full_name, html_url, url, title, diffDate } = pr;
+    const parsingTitle = title.replace(/\>/g, "");
+    const parsingDate = dateFormat[diffDate - 1];
+    if (index === 0) {
+      text += `${getLinkText(full_name, html_url)}\n`;
+    }
+    text += ` ${getFEMember(
       loginId
-    )}`,
-    channelId
-  );
+    )}의 ${parsingDate} 숙성된 PR인 <${url}|${parsingTitle}>가 있어요 \n`;
+  });
+  text += "더 숙성되지 않게 해주세요! 코드리뷰를 기다리고 있을게요🐥";
+  postMessageChannel(text, "C02R2GVEYS2");
 }
 
 module.exports = {
   sendPullRequestNotification,
-  sendForgotPullRequestNotification,
+  sendForgetPullRequestNotification,
   postMessageChannel,
 };

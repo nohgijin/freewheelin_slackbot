@@ -17,7 +17,8 @@ app.use(cookieParser());
 
 app.use("/", indexRouter);
 
-const dontForget = schedule.scheduleJob("0 20 11 * * 1-5", function () {
+scheduleGithub();
+const dontForget = schedule.scheduleJob("0 0 13 * * 1-5", function () {
   scheduleGithub();
 });
 

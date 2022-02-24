@@ -1,5 +1,5 @@
 const { default: axios } = require("axios");
-const { sendForgotPullRequestNotification } = require("./slack");
+const { sendForgetPullRequestNotification } = require("./slack");
 
 const prList = [];
 const notiPrList = [];
@@ -36,14 +36,12 @@ const scheduleGithub = async () => {
       Math.abs(new Date(pr.created_at).getTime() - new Date().getTime()) /
         (1000 * 60 * 60 * 24)
     );
-    if (diffDate >= 0) {
+    if (diffDate >= 1) {
       notiPrList.push({ ...pr, diffDate });
     }
   });
 
-  notiPrList.forEach((pr) => {
-    sendForgotPullRequestNotification(pr);
-  });
+  sendForgetPullRequestNotification(notiPrList);
 };
 
 module.exports = scheduleGithub;
